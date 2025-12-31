@@ -77,7 +77,10 @@ function App() {
                     {/* Sign in button */}
                     <div className="space-y-4">
                         <Button
-                            onClick={() => signIn.social({ provider: "google" })}
+                            onClick={() => signIn.social({ 
+                                provider: "google",
+                                callbackURL: window.location.origin
+                            })}
                             className="w-full py-6 text-lg gap-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold"
                             size="lg"
                         >
