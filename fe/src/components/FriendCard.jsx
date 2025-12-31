@@ -1,8 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, GripVertical } from "lucide-react";
+import { Pencil, Trash2, GripVertical, Briefcase, Coffee } from "lucide-react";
 import { DateTime } from "luxon";
 import "flag-icons/css/flag-icons.min.css";
 
@@ -44,12 +43,12 @@ export function FriendCard({ friend, onEdit, onDelete }) {
 
   return (
     <div ref={setNodeRef} style={style}>
-      <Card className={`relative transition-all hover:shadow-lg ${isDragging ? "shadow-xl ring-2 ring-primary" : ""}`}>
-        <CardContent className="p-4">
+      <div className={`relative bg-white rounded-2xl border border-purple-100 shadow-sm transition-all duration-200 hover:shadow-lg hover:shadow-purple-100 hover:-translate-y-0.5 ${isDragging ? "shadow-xl ring-2 ring-purple-400" : ""}`}>
+        <div className="p-5">
           <div className="flex items-center gap-4">
             {/* Drag handle */}
             <button
-              className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground hover:text-foreground transition-colors"
+              className="cursor-grab active:cursor-grabbing touch-none text-purple-300 hover:text-purple-500 transition-colors"
               {...attributes}
               {...listeners}
             >
@@ -57,25 +56,37 @@ export function FriendCard({ friend, onEdit, onDelete }) {
             </button>
 
             {/* Flag */}
-            <span className={`${getCountryFlagClass(friend.country_code)} text-2xl`} />
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner">
+              <span className={`${getCountryFlagClass(friend.country_code)} text-2xl`} />
+            </div>
 
             {/* Friend info */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-lg truncate">{friend.name}</h3>
-              <p className="text-sm text-muted-foreground truncate">{friend.city}</p>
+              <h3 className="font-bold text-lg text-foreground truncate">{friend.name}</h3>
+              <p className="text-sm text-muted-foreground font-medium truncate">{friend.city}</p>
             </div>
 
             {/* Time and status */}
             <div className="text-right">
-              <p className="text-2xl font-bold tabular-nums">{formatTime(localTime)}</p>
+              <p className="text-3xl font-extrabold tabular-nums gradient-text">{formatTime(localTime)}</p>
               <span
-                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
                   isWorking
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-yellow-500/20 text-yellow-400"
+                    ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 border border-emerald-200"
+                    : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 border border-amber-200"
                 }`}
               >
-                {isWorking ? "Working" : "Personal Time"}
+                {isWorking ? (
+                  <>
+                    <Briefcase className="h-3 w-3" />
+                    Working
+                  </>
+                ) : (
+                  <>
+                    <Coffee className="h-3 w-3" />
+                    Personal
+                  </>
+                )}
               </span>
             </div>
 
@@ -85,7 +96,7 @@ export function FriendCard({ friend, onEdit, onDelete }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => onEdit(friend)}
-                className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                className="h-9 w-9 rounded-xl text-purple-400 hover:text-purple-600 hover:bg-purple-50"
               >
                 <Pencil className="h-4 w-4" />
               </Button>
@@ -93,14 +104,14 @@ export function FriendCard({ friend, onEdit, onDelete }) {
                 variant="ghost"
                 size="icon"
                 onClick={() => onDelete(friend)}
-                className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                className="h-9 w-9 rounded-xl text-rose-400 hover:text-rose-600 hover:bg-rose-50"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }

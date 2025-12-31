@@ -36,26 +36,33 @@
 
 @layer base {
     :root {
-        --background: 222 47% 11%;
-        --foreground: 210 40% 98%;
-        --card: 222 47% 11%;
-        --card-foreground: 210 40% 98%;
-        --popover: 222 47% 11%;
-        --popover-foreground: 210 40% 98%;
-        --primary: 217 91% 60%;
-        --primary-foreground: 222 47% 11%;
-        --secondary: 217 33% 17%;
-        --secondary-foreground: 210 40% 98%;
-        --muted: 223 47% 16%;
-        --muted-foreground: 215 20% 65%;
-        --accent: 217 33% 17%;
-        --accent-foreground: 210 40% 98%;
-        --destructive: 0 62.8% 30.6%;
-        --destructive-foreground: 210 40% 98%;
-        --border: 217 33% 17%;
-        --input: 217 33% 17%;
-        --ring: 224 71% 4%;
-        --radius: 0.5rem;
+        /* Bright, happy light theme */
+        --background: 0 0% 100%;
+        --foreground: 240 10% 10%;
+        --card: 0 0% 100%;
+        --card-foreground: 240 10% 10%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 240 10% 10%;
+        /* Vibrant purple/violet primary */
+        --primary: 262 83% 58%;
+        --primary-foreground: 0 0% 100%;
+        /* Soft lavender secondary */
+        --secondary: 270 60% 96%;
+        --secondary-foreground: 262 83% 45%;
+        /* Light gray muted */
+        --muted: 240 5% 96%;
+        --muted-foreground: 240 4% 46%;
+        /* Soft accent */
+        --accent: 262 60% 95%;
+        --accent-foreground: 262 83% 45%;
+        /* Destructive red */
+        --destructive: 0 84% 60%;
+        --destructive-foreground: 0 0% 100%;
+        /* Borders and inputs */
+        --border: 240 6% 90%;
+        --input: 240 6% 90%;
+        --ring: 262 83% 58%;
+        --radius: 0.75rem;
     }
 }
 
@@ -65,7 +72,33 @@
     }
 
     body {
-        @apply bg-background text-foreground;
-        font-family: 'Inter', sans-serif;
+        @apply bg-background text-foreground antialiased;
+        font-family: 'Plus Jakarta Sans', sans-serif;
     }
+}
+
+/* Custom gradient backgrounds */
+.gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.gradient-bg-soft {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+}
+
+.gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Card hover effects */
+.card-hover {
+    transition: all 0.2s ease;
+}
+
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px -12px rgba(102, 126, 234, 0.25);
 }

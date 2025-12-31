@@ -7,6 +7,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { AlertTriangle } from "lucide-react";
 
 export function DeleteConfirmModal({ open, onOpenChange, friend, onConfirm }) {
   const handleConfirm = () => {
@@ -16,20 +17,25 @@ export function DeleteConfirmModal({ open, onOpenChange, friend, onConfirm }) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[400px]">
+      <DialogContent className="sm:max-w-[400px] rounded-2xl border-rose-100">
         <DialogHeader>
-          <DialogTitle>Delete Friend</DialogTitle>
-          <DialogDescription>
-            Are you sure you want to remove <strong>{friend?.name}</strong> from
+          <div className="flex items-center gap-3 mb-2">
+            <div className="w-10 h-10 rounded-full bg-rose-100 flex items-center justify-center">
+              <AlertTriangle className="h-5 w-5 text-rose-600" />
+            </div>
+            <DialogTitle className="text-xl font-bold">Delete Friend</DialogTitle>
+          </div>
+          <DialogDescription className="text-base">
+            Are you sure you want to remove <strong className="text-foreground">{friend?.name}</strong> from
             your friend list? This action cannot be undone.
           </DialogDescription>
         </DialogHeader>
 
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
+        <DialogFooter className="gap-2 sm:gap-2 mt-4">
+          <Button variant="outline" onClick={() => onOpenChange(false)} className="rounded-xl">
             Cancel
           </Button>
-          <Button variant="destructive" onClick={handleConfirm}>
+          <Button onClick={handleConfirm} className="rounded-xl bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600 shadow-lg shadow-rose-200">
             Delete
           </Button>
         </DialogFooter>

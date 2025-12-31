@@ -91,24 +91,25 @@ export function FriendModal({ open, onOpenChange, friend, onSave }) {
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] rounded-2xl border-purple-100">
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Friend" : "Add Friend"}</DialogTitle>
+          <DialogTitle className="text-xl font-bold">{isEditing ? "Edit Friend" : "Add Friend"}</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           <div className="grid gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" className="font-semibold">Name</Label>
             <Input
               id="name"
               placeholder="Enter friend's name"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              className="rounded-xl border-purple-100 focus:border-purple-300 focus:ring-purple-200"
             />
           </div>
 
           <div className="grid gap-2 relative">
-            <Label htmlFor="city">City</Label>
+            <Label htmlFor="city" className="font-semibold">City</Label>
             <Input
               id="city"
               placeholder="Search for a city..."
@@ -123,22 +124,23 @@ export function FriendModal({ open, onOpenChange, friend, onSave }) {
                 // Delay to allow click on suggestion
                 setTimeout(() => setShowSuggestions(false), 200);
               }}
+              className="rounded-xl border-purple-100 focus:border-purple-300 focus:ring-purple-200"
             />
 
             {/* City suggestions dropdown */}
             {showSuggestions && filteredCities.length > 0 && (
-              <div className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-md shadow-lg z-50 max-h-60 overflow-auto">
+              <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-purple-100 rounded-xl shadow-lg shadow-purple-100 z-50 max-h-60 overflow-auto">
                 {filteredCities.map((city, index) => (
                   <button
                     key={`${city.name}-${city.country_code}-${index}`}
-                    className="w-full px-3 py-2 text-left hover:bg-accent transition-colors flex items-center gap-2"
+                    className="w-full px-4 py-3 text-left hover:bg-purple-50 transition-colors flex items-center gap-3 first:rounded-t-xl last:rounded-b-xl"
                     onMouseDown={() => handleCitySelect(city)}
                   >
                     <span
-                      className={`fi fi-${city.country_code.toLowerCase()} text-sm`}
+                      className={`fi fi-${city.country_code.toLowerCase()} text-lg`}
                     />
-                    <span>{city.name}</span>
-                    <span className="text-xs text-muted-foreground ml-auto">
+                    <span className="font-medium">{city.name}</span>
+                    <span className="text-xs text-muted-foreground ml-auto bg-slate-100 px-2 py-0.5 rounded-full">
                       {city.country_code}
                     </span>
                   </button>
@@ -147,18 +149,20 @@ export function FriendModal({ open, onOpenChange, friend, onSave }) {
             )}
 
             {selectedCity && (
-              <p className="text-xs text-muted-foreground">
-                Timezone: {selectedCity.timezone_id}
+              <p className="text-xs text-muted-foreground flex items-center gap-2">
+                <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full font-medium">
+                  {selectedCity.timezone_id}
+                </span>
               </p>
             )}
           </div>
         </div>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={() => handleOpenChange(false)}>
+        <DialogFooter className="gap-2 sm:gap-2">
+          <Button variant="outline" onClick={() => handleOpenChange(false)} className="rounded-xl border-purple-200 hover:bg-purple-50">
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!isValid}>
+          <Button onClick={handleSave} disabled={!isValid} className="rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200">
             {isEditing ? "Save Changes" : "Add Friend"}
           </Button>
         </DialogFooter>
