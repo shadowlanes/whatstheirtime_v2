@@ -1,5 +1,7 @@
-FROM node:24-slim
+FROM node:24-alpine
 
+# Install system dependencies for Prisma
+RUN apk add --no-cache openssl libc6-compat curl
 WORKDIR /app
 
 COPY package*.json ./
