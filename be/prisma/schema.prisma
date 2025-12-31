@@ -17,9 +17,26 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
+  friends       Friend[]
 
   @@unique([email])
   @@map("user")
+}
+
+model Friend {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  city         String
+  timezone_id  String
+  country_code String
+  order_index  Int
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@map("friend")
 }
 
 model Session {

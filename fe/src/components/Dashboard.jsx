@@ -1,0 +1,299 @@
+import { useState, useEffect, useCallback } from "react";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { Button } from "@/components/ui/button";
+import { Plus, Users, Globe } from "lucide-react";
+import { FriendCard } from "./FriendCard";
+import { FriendModal } from "./FriendModal";
+import { DeleteConfirmModal } from "./DeleteConfirmModal";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
+export function Dashboard({ user, onSignOut }) {
+  const [friends, setFriends] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Modal states
+  const [friendModalOpen, setFriendModalOpen] = useState(false);
+  const [editingFriend, setEditingFriend] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deletingFriend, setDeletingFriend] = useState(null);
+
+  // Ticker state for updating times
+  const [, setTick] = useState(0);
+
+  // DnD sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
+  // Fetch friends
+  const fetchFriends = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/friends`, {
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to fetch friends");
+      const data = await response.json();
+      setFriends(data);
+      setError(null);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchFriends();
+  }, [fetchFriends]);
+
+  // Ticker to update times every 60 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTick((t) => t + 1);
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Create friend
+  const handleCreateFriend = async (friendData) => {
+    try {
+      const response = await fetch(`${API_URL}/api/friends`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(friendData),
+      });
+      if (!response.ok) throw new Error("Failed to create friend");
+      const newFriend = await response.json();
+      setFriends((prev) => [...prev, newFriend]);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Update friend
+  const handleUpdateFriend = async (friendData) => {
+    try {
+      const response = await fetch(`${API_URL}/api/friends/${friendData.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(friendData),
+      });
+      if (!response.ok) throw new Error("Failed to update friend");
+      const updatedFriend = await response.json();
+      setFriends((prev) =>
+        prev.map((f) => (f.id === updatedFriend.id ? updatedFriend : f))
+      );
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Delete friend
+  const handleDeleteFriend = async (friend) => {
+    try {
+      const response = await fetch(`${API_URL}/api/friends/${friend.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to delete friend");
+      setFriends((prev) => prev.filter((f) => f.id !== friend.id));
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Handle save from modal (create or update)
+  const handleSaveFriend = (friendData) => {
+    if (friendData.id) {
+      handleUpdateFriend(friendData);
+    } else {
+      handleCreateFriend(friendData);
+    }
+  };
+
+  // Handle drag end for reordering
+  const handleDragEnd = async (event) => {
+    const { active, over } = event;
+
+    if (active.id !== over?.id) {
+      const oldIndex = friends.findIndex((f) => f.id === active.id);
+      const newIndex = friends.findIndex((f) => f.id === over.id);
+
+      const newFriends = arrayMove(friends, oldIndex, newIndex);
+      setFriends(newFriends);
+
+      // Persist new order
+      const updates = newFriends.map((friend, index) => ({
+        id: friend.id,
+        order_index: index,
+      }));
+
+      try {
+        await fetch(`${API_URL}/api/friends/reorder`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(updates),
+        });
+      } catch (err) {
+        // Revert on error
+        fetchFriends();
+        setError("Failed to save new order");
+      }
+    }
+  };
+
+  // Open edit modal
+  const handleEdit = (friend) => {
+    setEditingFriend(friend);
+    setFriendModalOpen(true);
+  };
+
+  // Open delete modal
+  const handleDelete = (friend) => {
+    setDeletingFriend(friend);
+    setDeleteModalOpen(true);
+  };
+
+  // Open add modal
+  const handleAdd = () => {
+    setEditingFriend(null);
+    setFriendModalOpen(true);
+  };
+
+  // Calculate stats
+  const uniqueTimezones = new Set(friends.map((f) => f.timezone_id)).size;
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-background">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="border-b border-border bg-card/50 backdrop-blur-md sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+          <h1 className="text-xl font-bold">whats their time</h1>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">{user.name}</span>
+            <button
+              onClick={onSignOut}
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Summary Bar */}
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+          <div className="flex gap-6">
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Users className="h-5 w-5" />
+              <span className="font-semibold text-foreground">{friends.length}</span>
+              <span>Friends</span>
+            </div>
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <Globe className="h-5 w-5" />
+              <span className="font-semibold text-foreground">{uniqueTimezones}</span>
+              <span>Timezones</span>
+            </div>
+          </div>
+          <Button onClick={handleAdd} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Add Friend
+          </Button>
+        </div>
+
+        {/* Error display */}
+        {error && (
+          <div className="mb-4 p-4 bg-destructive/20 border border-destructive/50 rounded-lg text-destructive-foreground">
+            {error}
+          </div>
+        )}
+
+        {/* Friend List */}
+        {friends.length === 0 ? (
+          <div className="text-center py-20 border-2 border-dashed border-border rounded-lg">
+            <Users className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h3 className="text-xl font-semibold mb-2">No friends yet</h3>
+            <p className="text-muted-foreground mb-4">
+              Add your first friend to start tracking their time!
+            </p>
+            <Button onClick={handleAdd} className="gap-2">
+              <Plus className="h-4 w-4" />
+              Add Friend
+            </Button>
+          </div>
+        ) : (
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={friends.map((f) => f.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-3">
+                {friends.map((friend) => (
+                  <FriendCard
+                    key={friend.id}
+                    friend={friend}
+                    onEdit={handleEdit}
+                    onDelete={handleDelete}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
+      </main>
+
+      {/* Modals */}
+      <FriendModal
+        open={friendModalOpen}
+        onOpenChange={setFriendModalOpen}
+        friend={editingFriend}
+        onSave={handleSaveFriend}
+      />
+
+      <DeleteConfirmModal
+        open={deleteModalOpen}
+        onOpenChange={setDeleteModalOpen}
+        friend={deletingFriend}
+        onConfirm={handleDeleteFriend}
+      />
+    </div>
+  );
+}
