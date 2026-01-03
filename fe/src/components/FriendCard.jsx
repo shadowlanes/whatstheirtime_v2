@@ -31,7 +31,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div className={`relative bg-white rounded-2xl border border-purple-100 shadow-sm transition-all duration-200 hover:shadow-lg hover:shadow-purple-100 hover:-translate-y-0.5 ${isDragging ? "shadow-xl ring-2 ring-purple-400" : ""}`}>
+      <div className={`relative rounded-2xl border shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${dayNightDisplay.cardGradient} ${dayNightDisplay.borderColor} ${isDragging ? "shadow-xl ring-2 ring-purple-400" : "hover:shadow-purple-100/50"}`}>
         <div className="p-5">
           <div className="flex items-center gap-4">
             {/* Drag handle */}
