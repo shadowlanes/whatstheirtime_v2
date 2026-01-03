@@ -210,13 +210,21 @@ export function Dashboard({ user, onSignOut }) {
       {/* Navigation */}
       <nav className="border-b border-purple-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-extrabold gradient-text">whats their time</h1>
+          <h1 className="text-xl font-extrabold gradient-text">
+            what's their time
+          </h1>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2">
               {user.image && (
-                <img src={user.image} alt={user.name} className="w-8 h-8 rounded-full ring-2 ring-purple-200" />
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-8 h-8 rounded-full ring-2 ring-purple-200"
+                />
               )}
-              <span className="text-sm font-medium text-foreground">{user.name}</span>
+              <span className="text-sm font-medium text-foreground">
+                {user.name}
+              </span>
             </div>
             <button
               onClick={onSignOut}
@@ -236,18 +244,27 @@ export function Dashboard({ user, onSignOut }) {
               <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
                 <Users className="h-4 w-4 text-white" />
               </div>
-              <span className="font-bold text-lg text-foreground">{friends.length}</span>
+              <span className="font-bold text-lg text-foreground">
+                {friends.length}
+              </span>
               <span className="text-muted-foreground font-medium">Friends</span>
             </div>
             <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-purple-100">
               <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center">
                 <Globe className="h-4 w-4 text-white" />
               </div>
-              <span className="font-bold text-lg text-foreground">{uniqueTimezones}</span>
-              <span className="text-muted-foreground font-medium">Timezones</span>
+              <span className="font-bold text-lg text-foreground">
+                {uniqueTimezones}
+              </span>
+              <span className="text-muted-foreground font-medium">
+                Timezones
+              </span>
             </div>
           </div>
-          <Button onClick={handleAdd} className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold">
+          <Button
+            onClick={handleAdd}
+            className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold"
+          >
             <Plus className="h-4 w-4" />
             Add Friend
           </Button>
@@ -276,7 +293,10 @@ export function Dashboard({ user, onSignOut }) {
             <p className="text-muted-foreground mb-6">
               Add your first friend to start tracking their time!
             </p>
-            <Button onClick={handleAdd} className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold">
+            <Button
+              onClick={handleAdd}
+              className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold"
+            >
               <Plus className="h-4 w-4" />
               Add Friend
             </Button>
