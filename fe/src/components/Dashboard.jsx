@@ -18,6 +18,7 @@ import { Plus, Users, Globe } from "lucide-react";
 import { FriendCard } from "./FriendCard";
 import { FriendModal } from "./FriendModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
+import { TimeScrubber } from "./TimeScrubber";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
@@ -34,6 +35,9 @@ export function Dashboard({ user, onSignOut }) {
 
   // Ticker state for updating times
   const [, setTick] = useState(0);
+
+  // Time offset state for scrubber
+  const [timeOffsetMinutes, setTimeOffsetMinutes] = useState(0);
 
   // DnD sensors
   const sensors = useSensors(
@@ -67,6 +71,11 @@ export function Dashboard({ user, onSignOut }) {
   useEffect(() => {
     fetchFriends();
   }, [fetchFriends]);
+
+  // Reset time offset to "Now" on mount
+  useEffect(() => {
+    setTimeOffsetMinutes(0);
+  }, []);
 
   // Ticker to update times every 60 seconds
   useEffect(() => {
@@ -251,6 +260,12 @@ export function Dashboard({ user, onSignOut }) {
           </div>
         )}
 
+        {/* Time Scrubber */}
+        <TimeScrubber
+          timeOffsetMinutes={timeOffsetMinutes}
+          onOffsetChange={setTimeOffsetMinutes}
+        />
+
         {/* Friend List */}
         {friends.length === 0 ? (
           <div className="text-center py-20 bg-white/60 backdrop-blur-sm border-2 border-dashed border-purple-200 rounded-2xl">
@@ -281,6 +296,7 @@ export function Dashboard({ user, onSignOut }) {
                   <FriendCard
                     key={friend.id}
                     friend={friend}
+                    timeOffsetMinutes={timeOffsetMinutes}
                     onEdit={handleEdit}
                     onDelete={handleDelete}
                   />

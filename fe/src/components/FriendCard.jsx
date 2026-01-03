@@ -1,28 +1,15 @@
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { Button } from "@/components/ui/button";
-import { Pencil, Trash2, GripVertical, Briefcase, Coffee } from "lucide-react";
-import { DateTime } from "luxon";
+import { Pencil, Trash2, GripVertical } from "lucide-react";
 import "flag-icons/css/flag-icons.min.css";
+import { getOffsetTime, formatTime, getDayNightState, getDayNightDisplay } from "@/utils/timeUtils";
 
 function getCountryFlagClass(countryCode) {
   return `fi fi-${countryCode.toLowerCase()}`;
 }
 
-function getLocalTime(timezoneId) {
-  return DateTime.now().setZone(timezoneId);
-}
-
-function formatTime(dt) {
-  return dt.toFormat("h:mm a");
-}
-
-function isWorkingHours(dt) {
-  const hour = dt.hour;
-  return hour >= 9 && hour < 18;
-}
-
-export function FriendCard({ friend, onEdit, onDelete }) {
+export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) {
   const {
     attributes,
     listeners,
@@ -38,8 +25,9 @@ export function FriendCard({ friend, onEdit, onDelete }) {
     opacity: isDragging ? 0.5 : 1,
   };
 
-  const localTime = getLocalTime(friend.timezone_id);
-  const isWorking = isWorkingHours(localTime);
+  const localTime = getOffsetTime(friend.timezone_id, timeOffsetMinutes);
+  const dayNightState = getDayNightState(localTime);
+  const dayNightDisplay = getDayNightDisplay(dayNightState);
 
   return (
     <div ref={setNodeRef} style={style}>
@@ -69,24 +57,9 @@ export function FriendCard({ friend, onEdit, onDelete }) {
             {/* Time and status */}
             <div className="text-right">
               <p className="text-3xl font-extrabold tabular-nums gradient-text">{formatTime(localTime)}</p>
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${
-                  isWorking
-                    ? "bg-gradient-to-r from-emerald-50 to-green-50 text-emerald-600 border border-emerald-200"
-                    : "bg-gradient-to-r from-amber-50 to-orange-50 text-amber-600 border border-amber-200"
-                }`}
-              >
-                {isWorking ? (
-                  <>
-                    <Briefcase className="h-3 w-3" />
-                    Working
-                  </>
-                ) : (
-                  <>
-                    <Coffee className="h-3 w-3" />
-                    Personal
-                  </>
-                )}
+              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold ${dayNightDisplay.className}`}>
+                <span>{dayNightDisplay.icon}</span>
+                {dayNightDisplay.label}
               </span>
             </div>
 
