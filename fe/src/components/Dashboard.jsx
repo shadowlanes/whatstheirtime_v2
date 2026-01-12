@@ -199,16 +199,16 @@ export function Dashboard({ user, onSignOut }) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+      <div className="flex items-center justify-center min-h-screen bg-background">
         <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+    <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="border-b border-purple-100 bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+      <nav className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
           <h1 className="text-xl font-extrabold gradient-text">
             what's their time
@@ -219,7 +219,7 @@ export function Dashboard({ user, onSignOut }) {
                 <img
                   src={user.image}
                   alt={user.name}
-                  className="w-8 h-8 rounded-full ring-2 ring-purple-200"
+                  className="w-8 h-8 rounded-full ring-2 ring-primary/20"
                 />
               )}
               <span className="text-sm font-medium text-foreground">
@@ -240,18 +240,18 @@ export function Dashboard({ user, onSignOut }) {
         {/* Summary Bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div className="flex gap-4">
-            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-purple-100">
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
-                <Users className="h-4 w-4 text-white" />
+            <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-border">
+              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                <Users className="h-4 w-4 text-primary-foreground" />
               </div>
               <span className="font-bold text-lg text-foreground">
                 {friends.length}
               </span>
               <span className="text-muted-foreground font-medium">Friends</span>
             </div>
-            <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-purple-100">
-              <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-full flex items-center justify-center">
-                <Globe className="h-4 w-4 text-white" />
+            <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-border">
+              <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
+                <Globe className="h-4 w-4 text-secondary-foreground" />
               </div>
               <span className="font-bold text-lg text-foreground">
                 {uniqueTimezones}
@@ -263,7 +263,7 @@ export function Dashboard({ user, onSignOut }) {
           </div>
           <Button
             onClick={handleAdd}
-            className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold"
+            className="gap-2 bg-primary hover:bg-primary/90 shadow-lg font-semibold"
           >
             <Plus className="h-4 w-4" />
             Add Friend
@@ -272,7 +272,7 @@ export function Dashboard({ user, onSignOut }) {
 
         {/* Error display */}
         {error && (
-          <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 font-medium">
+          <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive font-medium">
             {error}
           </div>
         )}
@@ -285,9 +285,9 @@ export function Dashboard({ user, onSignOut }) {
 
         {/* Friend List */}
         {friends.length === 0 ? (
-          <div className="text-center py-20 bg-white/60 backdrop-blur-sm border-2 border-dashed border-purple-200 rounded-2xl">
-            <div className="w-16 h-16 mx-auto bg-gradient-to-br from-violet-500 to-purple-600 rounded-2xl flex items-center justify-center mb-4">
-              <Users className="h-8 w-8 text-white" />
+          <div className="text-center py-20 bg-card/60 backdrop-blur-sm border-2 border-dashed border-border rounded-2xl">
+            <div className="w-16 h-16 mx-auto bg-primary rounded-2xl flex items-center justify-center mb-4">
+              <Users className="h-8 w-8 text-primary-foreground" />
             </div>
             <h3 className="text-2xl font-bold mb-2">No friends yet</h3>
             <p className="text-muted-foreground mb-6">
@@ -295,7 +295,7 @@ export function Dashboard({ user, onSignOut }) {
             </p>
             <Button
               onClick={handleAdd}
-              className="gap-2 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold"
+              className="gap-2 bg-primary hover:bg-primary/90 shadow-lg font-semibold"
             >
               <Plus className="h-4 w-4" />
               Add Friend

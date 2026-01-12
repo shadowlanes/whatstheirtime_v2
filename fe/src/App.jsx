@@ -8,7 +8,7 @@ function App() {
 
     if (isPending) {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+            <div className="flex items-center justify-center min-h-screen bg-background">
                 <div className="animate-spin rounded-full h-10 w-10 border-4 border-primary border-t-transparent"></div>
             </div>
         );
@@ -21,20 +21,20 @@ function App() {
 
     // Not authenticated: show landing page
     return (
-        <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50 overflow-hidden">
+        <div className="min-h-screen bg-background overflow-hidden">
             {/* Decorative blobs */}
-            <div className="absolute top-0 left-0 w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" />
-            <div className="absolute top-0 right-0 w-96 h-96 bg-violet-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000" />
-            <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-500" />
+            <div className="absolute top-0 left-0 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse" />
+            <div className="absolute top-0 right-0 w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000" />
+            <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-accent/30 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-500" />
 
             <div className="relative flex flex-col items-center justify-center min-h-screen p-6">
                 <div className="max-w-lg w-full space-y-8 text-center">
                     {/* Logo */}
                     <div className="flex justify-center">
                         <div className="relative">
-                            <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-600 rounded-2xl blur-lg opacity-50" />
-                            <div className="relative bg-gradient-to-r from-violet-600 to-purple-600 p-4 rounded-2xl">
-                                <Globe className="h-12 w-12 text-white" />
+                            <div className="absolute inset-0 bg-primary rounded-2xl blur-lg opacity-50" />
+                            <div className="relative bg-primary p-4 rounded-2xl">
+                                <Globe className="h-12 w-12 text-primary-foreground" />
                             </div>
                         </div>
                     </div>
@@ -51,23 +51,23 @@ function App() {
 
                     {/* Feature cards */}
                     <div className="grid grid-cols-3 gap-4 py-8">
-                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-purple-100 border border-purple-100">
-                            <div className="w-12 h-12 mx-auto bg-gradient-to-br from-orange-400 to-pink-500 rounded-xl flex items-center justify-center mb-3">
-                                <Globe className="h-6 w-6 text-white" />
+                        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-border">
+                            <div className="w-12 h-12 mx-auto bg-accent rounded-xl flex items-center justify-center mb-3">
+                                <Globe className="h-6 w-6 text-accent-foreground" />
                             </div>
                             <p className="text-sm font-semibold text-foreground">Global Coverage</p>
                             <p className="text-xs text-muted-foreground mt-1">280+ cities worldwide</p>
                         </div>
-                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-purple-100 border border-purple-100">
-                            <div className="w-12 h-12 mx-auto bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-xl flex items-center justify-center mb-3">
-                                <Clock className="h-6 w-6 text-white" />
+                        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-border">
+                            <div className="w-12 h-12 mx-auto bg-secondary rounded-xl flex items-center justify-center mb-3">
+                                <Clock className="h-6 w-6 text-secondary-foreground" />
                             </div>
                             <p className="text-sm font-semibold text-foreground">Live Updates</p>
                             <p className="text-xs text-muted-foreground mt-1">Real-time sync</p>
                         </div>
-                        <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg shadow-purple-100 border border-purple-100">
-                            <div className="w-12 h-12 mx-auto bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center mb-3">
-                                <Users className="h-6 w-6 text-white" />
+                        <div className="bg-card/80 backdrop-blur-sm rounded-2xl p-4 shadow-lg border border-border">
+                            <div className="w-12 h-12 mx-auto bg-primary rounded-xl flex items-center justify-center mb-3">
+                                <Users className="h-6 w-6 text-primary-foreground" />
                             </div>
                             <p className="text-sm font-semibold text-foreground">Work Status</p>
                             <p className="text-xs text-muted-foreground mt-1">9-6 detection</p>
@@ -77,11 +77,11 @@ function App() {
                     {/* Sign in button */}
                     <div className="space-y-4">
                         <Button
-                            onClick={() => signIn.social({ 
+                            onClick={() => signIn.social({
                                 provider: "google",
                                 callbackURL: window.location.origin
                             })}
-                            className="w-full py-6 text-lg gap-3 bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg shadow-purple-200 font-semibold"
+                            className="w-full py-6 text-lg gap-3 bg-primary hover:bg-primary/90 shadow-lg font-semibold"
                             size="lg"
                         >
                             <svg className="h-5 w-5" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@ function App() {
                         </Button>
 
                         <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                            <Sparkles className="h-4 w-4 text-purple-500" />
+                            <Sparkles className="h-4 w-4 text-primary" />
                             Free forever. No credit card needed.
                         </p>
                     </div>

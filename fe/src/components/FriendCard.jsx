@@ -31,13 +31,13 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
 
   return (
     <div ref={setNodeRef} style={style}>
-      <div className={`relative rounded-2xl border shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${dayNightDisplay.cardGradient} ${dayNightDisplay.borderColor} ${isDragging ? "shadow-xl ring-2 ring-purple-400" : "hover:shadow-purple-100/50"}`}>
+      <div className={`relative rounded-2xl border shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 ${dayNightDisplay.cardGradient} ${dayNightDisplay.borderColor} ${isDragging ? "shadow-xl ring-2 ring-primary/40" : ""}`}>
         <div className="p-4 sm:p-5">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-start gap-3">
             {/* Drag handle */}
             <button
-              className="cursor-grab active:cursor-grabbing touch-none text-purple-300 hover:text-purple-500 transition-colors pt-1"
+              className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground/30 hover:text-primary transition-colors pt-1"
               {...attributes}
               {...listeners}
             >
@@ -45,7 +45,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
             </button>
 
             {/* Flag */}
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner flex-shrink-0">
+            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center shadow-inner flex-shrink-0">
               <span className={`${getCountryFlagClass(friend.country_code)} text-xl`} />
             </div>
 
@@ -68,7 +68,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
                 variant="ghost"
                 size="icon"
                 onClick={() => onEdit(friend)}
-                className="h-8 w-8 rounded-lg text-purple-400 hover:text-purple-600 hover:bg-purple-50"
+                className="h-8 w-8 rounded-lg text-primary hover:text-primary hover:bg-accent"
               >
                 <Pencil className="h-3.5 w-3.5" />
               </Button>
@@ -76,7 +76,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
                 variant="ghost"
                 size="icon"
                 onClick={() => onDelete(friend)}
-                className="h-8 w-8 rounded-lg text-rose-400 hover:text-rose-600 hover:bg-rose-50"
+                className="h-8 w-8 rounded-lg text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
@@ -87,7 +87,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
           <div className="hidden sm:flex items-center gap-4">
             {/* Drag handle */}
             <button
-              className="cursor-grab active:cursor-grabbing touch-none text-purple-300 hover:text-purple-500 transition-colors"
+              className="cursor-grab active:cursor-grabbing touch-none text-muted-foreground/30 hover:text-primary transition-colors"
               {...attributes}
               {...listeners}
             >
@@ -95,7 +95,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
             </button>
 
             {/* Flag */}
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center shadow-inner">
+            <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center shadow-inner">
               <span className={`${getCountryFlagClass(friend.country_code)} text-2xl`} />
             </div>
 
@@ -120,7 +120,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
                 variant="ghost"
                 size="icon"
                 onClick={() => onEdit(friend)}
-                className="h-9 w-9 rounded-xl text-purple-400 hover:text-purple-600 hover:bg-purple-50"
+                className="h-9 w-9 rounded-xl text-primary hover:text-primary hover:bg-accent"
               >
                 <Pencil className="h-4 w-4" />
               </Button>
@@ -128,7 +128,7 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
                 variant="ghost"
                 size="icon"
                 onClick={() => onDelete(friend)}
-                className="h-9 w-9 rounded-xl text-rose-400 hover:text-rose-600 hover:bg-rose-50"
+                className="h-9 w-9 rounded-xl text-destructive hover:text-destructive hover:bg-destructive/10"
               >
                 <Trash2 className="h-4 w-4" />
               </Button>

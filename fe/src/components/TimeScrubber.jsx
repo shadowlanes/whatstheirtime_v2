@@ -31,7 +31,7 @@ export function TimeScrubber({ timeOffsetMinutes, onOffsetChange }) {
   };
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-sm border border-purple-100 p-6 mb-6">
+    <div className="bg-card/80 backdrop-blur-sm rounded-2xl shadow-sm border border-border p-6 mb-6">
       <div className="flex items-center justify-between mb-4">
         <div className="flex-1 text-center">
           <p className="text-sm font-medium text-muted-foreground mb-1">Your Time</p>
@@ -59,9 +59,9 @@ export function TimeScrubber({ timeOffsetMinutes, onOffsetChange }) {
             onChange={handleSliderChange}
             aria-label="Time offset in hours"
             aria-valuetext={formatTimeOffset(timeOffsetMinutes)}
-            className="w-full h-2 bg-purple-100 rounded-lg appearance-none cursor-pointer slider-thumb"
+            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider-thumb"
           />
-          <div className="absolute top-0 left-1/2 w-px h-2 bg-purple-400 -translate-x-1/2" />
+          <div className="absolute top-0 left-1/2 w-px h-2 bg-primary -translate-x-1/2" />
         </div>
 
         <span className="text-xs font-medium text-muted-foreground w-10 sm:w-12 text-center">
@@ -71,12 +71,12 @@ export function TimeScrubber({ timeOffsetMinutes, onOffsetChange }) {
 
       {isOffset && (
         <div className="flex items-center justify-center gap-2 mt-3">
-          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-purple-100 text-purple-700">
+          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-secondary text-secondary-foreground">
             {formatTimeOffset(timeOffsetMinutes)}
           </span>
           <button
             onClick={handleReset}
-            className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-purple-100 text-purple-700 hover:bg-purple-200 transition-colors"
+            className="inline-flex items-center justify-center h-7 w-7 rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/80 transition-colors"
             aria-label="Reset to now"
           >
             <RotateCcw className="h-3.5 w-3.5" />
