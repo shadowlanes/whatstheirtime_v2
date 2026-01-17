@@ -50,6 +50,48 @@ function getWeatherCategory(code) {
   return "Unknown";
 }
 
+// Get air quality category and label based on US AQI
+function getAirQualityInfo(usAqi) {
+  if (!usAqi)
+    return { category: "Unknown", label: "No Data", color: "text-gray-500" };
+
+  if (usAqi <= 50)
+    return {
+      category: "Good",
+      label: "Good",
+      color: "text-green-600 dark:text-green-400",
+    };
+  if (usAqi <= 100)
+    return {
+      category: "Moderate",
+      label: "Moderate",
+      color: "text-yellow-600 dark:text-yellow-400",
+    };
+  if (usAqi <= 150)
+    return {
+      category: "Bad",
+      label: "Bad",
+      color: "text-orange-600 dark:text-orange-400",
+    };
+  if (usAqi <= 200)
+    return {
+      category: "Unhealthy",
+      label: "Unhealthy",
+      color: "text-red-600 dark:text-red-400",
+    };
+  if (usAqi <= 300)
+    return {
+      category: "Very Unhealthy",
+      label: "Very Unhealthy",
+      color: "text-purple-600 dark:text-purple-400",
+    };
+  return {
+    category: "Hazardous",
+    label: "Hazardous",
+    color: "text-red-900 dark:text-red-700",
+  };
+}
+
 // Check if cached weather is still valid (not older than 6 hours)
 function isCacheValid(timestamp) {
   const SIX_HOURS = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
@@ -72,7 +114,7 @@ export async function getWeatherForCity(city) {
   return fetchWeatherFromAPI(city);
 }
 
-// Fetch weather from Open-Meteo API
+// Fetch weather and air quality from Open-Meteo API
 async function fetchWeatherFromAPI(city) {
   try {
     const coords = CITY_COORDINATES[city];
@@ -82,21 +124,44 @@ async function fetchWeatherFromAPI(city) {
     }
 
     const [latitude, longitude] = coords;
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`;
 
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new Error(`Weather API error: ${response.statusText}`);
+    // Fetch both weather and air quality in parallel
+    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`;
+    const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=european_aqi,us_aqi,pm10,pm2_5`;
+
+    const [weatherResponse, airQualityResponse] = await Promise.all([
+      fetch(weatherUrl),
+      fetch(airQualityUrl),
+    ]);
+
+    if (!weatherResponse.ok) {
+      throw new Error(`Weather API error: ${weatherResponse.statusText}`);
     }
 
-    const data = await response.json();
-    const current = data.current;
+    const weatherData = await weatherResponse.json();
+    const current = weatherData.current;
 
-    const weatherData = {
+    let airQualityData = null;
+    if (airQualityResponse.ok) {
+      const aqData = await airQualityResponse.json();
+      const aqCurrent = aqData.current;
+      const aqInfo = getAirQualityInfo(aqCurrent.us_aqi);
+
+      airQualityData = {
+        aqi: aqCurrent.us_aqi,
+        pm10: aqCurrent.pm10,
+        pm25: aqCurrent.pm2_5,
+        ...aqInfo,
+      };
+    }
+
+    const combinedData = {
       temperature: Math.round(current.temperature_2m),
       weatherCode: current.weather_code,
-      weatherDescription: WEATHER_CODE_DESCRIPTIONS[current.weather_code] || "Unknown",
+      weatherDescription:
+        WEATHER_CODE_DESCRIPTIONS[current.weather_code] || "Unknown",
       weatherCategory: getWeatherCategory(current.weather_code),
+      airQuality: airQualityData,
       fetchedAt: new Date().toISOString(),
     };
 
@@ -104,12 +169,12 @@ async function fetchWeatherFromAPI(city) {
     localStorage.setItem(
       `weather_${city}`,
       JSON.stringify({
-        data: weatherData,
+        data: combinedData,
         timestamp: Date.now(),
-      })
+      }),
     );
 
-    return weatherData;
+    return combinedData;
   } catch (error) {
     console.error(`Error fetching weather for ${city}:`, error);
     return null;

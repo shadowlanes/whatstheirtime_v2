@@ -67,11 +67,18 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
 
             {/* Bottom row: weather, time, actions */}
             <div className="flex items-center justify-between gap-3 px-1">
-              {/* Weather */}
+              {/* Weather & Air Quality */}
               {weather && (
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-blue-600 dark:text-blue-400 text-sm">{weather.temperature}°C</span>
-                  <span className="text-muted-foreground text-xs">{weather.weatherCategory}</span>
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-2">
+                    <span className="font-semibold text-blue-600 dark:text-blue-400 text-sm">{weather.temperature}°C</span>
+                    <span className="text-muted-foreground text-xs">{weather.weatherCategory}</span>
+                  </div>
+                  {weather.airQuality && weather.airQuality.aqi && (
+                    <span className={`text-xs font-medium ${weather.airQuality.color}`}>
+                      AQI: {weather.airQuality.label}: {weather.airQuality.aqi}
+                    </span>
+                  )}
                 </div>
               )}
 
@@ -127,12 +134,17 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
               <p className="text-sm text-muted-foreground font-medium truncate">{friend.city}</p>
             </div>
 
-            {/* Weather - fixed width for alignment */}
-            <div className="flex flex-col items-end w-20">
+            {/* Weather & Air Quality - fixed width for alignment */}
+            <div className="flex flex-col items-end w-28">
               {weather && (
                 <>
                   <span className="font-semibold text-blue-600 dark:text-blue-400 text-base leading-tight whitespace-nowrap">{weather.temperature}°C</span>
                   <span className="text-muted-foreground text-xs leading-tight">{weather.weatherCategory}</span>
+                  {weather.airQuality && weather.airQuality.aqi && (
+                    <span className={`text-xs leading-tight font-medium ${weather.airQuality.color}`}>
+                      AQI: {weather.airQuality.label}: {weather.airQuality.aqi}
+                    </span>
+                  )}
                 </>
               )}
             </div>
