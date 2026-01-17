@@ -19,6 +19,7 @@ import { FriendCard } from "./FriendCard";
 import { FriendModal } from "./FriendModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { TimeScrubber } from "./TimeScrubber";
+import { refreshWeatherForCity } from "@/utils/weatherUtils";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
@@ -84,6 +85,26 @@ export function Dashboard({ user, onSignOut }) {
     }, 60000);
     return () => clearInterval(interval);
   }, []);
+
+  // Refresh weather for all friends every 6 hours
+  useEffect(() => {
+    const refreshAllWeather = async () => {
+      friends.forEach((friend) => {
+        refreshWeatherForCity(friend.city).catch((err) =>
+          console.error(`Error refreshing weather for ${friend.city}:`, err)
+        );
+      });
+    };
+
+    // Refresh immediately on mount
+    refreshAllWeather();
+
+    // Set up interval for 6 hours (21,600,000 ms)
+    const SIX_HOURS = 6 * 60 * 60 * 1000;
+    const interval = setInterval(refreshAllWeather, SIX_HOURS);
+
+    return () => clearInterval(interval);
+  }, [friends]);
 
   // Create friend
   const handleCreateFriend = async (friendData) => {
