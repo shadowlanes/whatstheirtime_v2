@@ -67,8 +67,8 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
 
             {/* Bottom row: weather, time, actions */}
             <div className="flex items-center justify-between gap-3 px-1">
-              {/* Weather & Air Quality */}
-              {weather && (
+              {/* Weather & Air Quality - only show when at current time */}
+              {weather && timeOffsetMinutes === 0 && (
                 <div className="flex flex-col gap-0.5">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-blue-600 dark:text-blue-400 text-sm">{weather.temperature}°C</span>
@@ -134,9 +134,9 @@ export function FriendCard({ friend, timeOffsetMinutes = 0, onEdit, onDelete }) 
               <p className="text-sm text-muted-foreground font-medium truncate">{friend.city}</p>
             </div>
 
-            {/* Weather & Air Quality - fixed width for alignment */}
+            {/* Weather & Air Quality - fixed width for alignment, only show when at current time */}
             <div className="flex flex-col items-end w-28">
-              {weather && (
+              {weather && timeOffsetMinutes === 0 && (
                 <>
                   <span className="font-semibold text-blue-600 dark:text-blue-400 text-base leading-tight whitespace-nowrap">{weather.temperature}°C</span>
                   <span className="text-muted-foreground text-xs leading-tight">{weather.weatherCategory}</span>
