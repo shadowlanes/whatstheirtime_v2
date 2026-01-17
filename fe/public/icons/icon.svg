@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#6366f1;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Main background circle -->
+  <circle cx="256" cy="256" r="240" fill="url(#bgGradient)"/>
+
+  <!-- Globe/World lines -->
+  <g stroke="#ffffff" stroke-width="3" fill="none" opacity="0.3">
+    <!-- Horizontal lines (latitude) -->
+    <ellipse cx="256" cy="256" rx="180" ry="180"/>
+    <ellipse cx="256" cy="256" rx="180" ry="135"/>
+    <ellipse cx="256" cy="256" rx="180" ry="90"/>
+    <ellipse cx="256" cy="256" rx="180" ry="45"/>
+
+    <!-- Vertical line (longitude) -->
+    <line x1="256" y1="76" x2="256" y2="436"/>
+    <path d="M 166 256 Q 166 166, 256 166 T 346 256 T 256 346 T 166 256"/>
+    <path d="M 346 256 Q 346 166, 256 166"/>
+    <path d="M 346 256 Q 346 346, 256 346"/>
+  </g>
+
+  <!-- Clock face background -->
+  <circle cx="256" cy="256" r="140" fill="#ffffff"/>
+  <circle cx="256" cy="256" r="135" fill="none" stroke="#6366f1" stroke-width="6"/>
+
+  <!-- Clock hour markers -->
+  <g fill="#6366f1">
+    <circle cx="256" cy="126" r="6"/>
+    <circle cx="326" cy="166" r="6"/>
+    <circle cx="386" cy="256" r="6"/>
+    <circle cx="326" cy="346" r="6"/>
+    <circle cx="256" cy="386" r="6"/>
+    <circle cx="186" cy="346" r="6"/>
+    <circle cx="126" cy="256" r="6"/>
+    <circle cx="186" cy="166" r="6"/>
+  </g>
+
+  <!-- Clock hands -->
+  <g stroke="#6366f1" stroke-linecap="round">
+    <!-- Hour hand (pointing to 10) -->
+    <line x1="256" y1="256" x2="210" y2="186" stroke-width="10"/>
+    <!-- Minute hand (pointing to 2) -->
+    <line x1="256" y1="256" x2="316" y2="196" stroke-width="8"/>
+  </g>
+
+  <!-- Center dot -->
+  <circle cx="256" cy="256" r="12" fill="#6366f1"/>
+</svg>
