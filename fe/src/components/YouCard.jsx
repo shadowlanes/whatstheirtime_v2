@@ -72,7 +72,7 @@ export function YouCard({
 
   return (
     <div className="mb-6">
-      <div className={`relative rounded-2xl border-2 shadow-md ring-2 ring-primary/10 bg-accent/20 transition-all ${dayNightDisplay.cardGradient} ${dayNightDisplay.borderColor}`}>
+      <div className="relative rounded-2xl border-2 shadow-md ring-2 ring-primary/10 bg-white transition-all border-border">
         <div className="p-4 sm:p-5">
           {/* Mobile Layout */}
           <div className="flex sm:hidden items-center gap-3">
