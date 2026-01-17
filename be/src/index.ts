@@ -165,6 +165,57 @@ app.delete("/api/friends/:id", async (req, res) => {
     res.status(204).send();
 });
 
+// GET /api/user/location - Get user's location
+app.get("/api/user/location", async (req, res) => {
+    const user = await getAuthenticatedUser(req);
+    if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const userData = await prisma.user.findUnique({
+        where: { id: user.id },
+        select: { city: true, timezone_id: true, country_code: true }
+    });
+
+    res.json({
+        city: userData?.city || null,
+        timezone_id: userData?.timezone_id || null,
+        country_code: userData?.country_code || null
+    });
+});
+
+// PUT /api/user/location - Update user's location
+app.put("/api/user/location", async (req, res) => {
+    const user = await getAuthenticatedUser(req);
+    if (!user) {
+        return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const { city, timezone_id, country_code } = req.body;
+
+    // Validate: either all fields or all null
+    const hasAllFields = city && timezone_id && country_code;
+    const hasNoFields = !city && !timezone_id && !country_code;
+
+    if (!hasAllFields && !hasNoFields) {
+        return res.status(400).json({
+            error: "Must provide all location fields or none to clear"
+        });
+    }
+
+    const updatedUser = await prisma.user.update({
+        where: { id: user.id },
+        data: {
+            city: city || null,
+            timezone_id: timezone_id || null,
+            country_code: country_code || null
+        },
+        select: { city: true, timezone_id: true, country_code: true }
+    });
+
+    res.json(updatedUser);
+});
+
 // Example protected route
 app.get("/api/protected", async (req, res) => {
     const session = await auth.api.getSession({ headers: req.headers as unknown as Headers });

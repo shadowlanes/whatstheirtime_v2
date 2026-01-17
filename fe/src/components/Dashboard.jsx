@@ -18,7 +18,8 @@ import { Plus, Users, Globe, Settings, LogOut } from "lucide-react";
 import { FriendCard } from "./FriendCard";
 import { FriendModal } from "./FriendModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
-import { TimeScrubber } from "./TimeScrubber";
+import { YouCard } from "./YouCard";
+import { UserLocationModal } from "./UserLocationModal";
 import { refreshWeatherForCity } from "@/utils/weatherUtils";
 import {
   Dialog,
@@ -46,6 +47,12 @@ export function Dashboard({ user, onSignOut }) {
 
   // Time offset state for scrubber
   const [timeOffsetMinutes, setTimeOffsetMinutes] = useState(0);
+
+  // User location state
+  const [userLocation, setUserLocation] = useState(null);
+  const [loadingLocation, setLoadingLocation] = useState(true);
+  const [userLocationModalOpen, setUserLocationModalOpen] = useState(false);
+  const [isScrubberVisible, setIsScrubberVisible] = useState(false);
 
   // DnD sensors
   const sensors = useSensors(
@@ -76,9 +83,27 @@ export function Dashboard({ user, onSignOut }) {
     }
   }, []);
 
+  // Fetch user location
+  const fetchUserLocation = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/location`, {
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed to fetch user location");
+      const data = await response.json();
+      setUserLocation(data.city ? data : null);
+    } catch (err) {
+      console.error("Error fetching user location:", err);
+      setUserLocation(null);
+    } finally {
+      setLoadingLocation(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchFriends();
-  }, [fetchFriends]);
+    fetchUserLocation();
+  }, [fetchFriends, fetchUserLocation]);
 
   // Reset time offset to "Now" on mount
   useEffect(() => {
@@ -222,6 +247,29 @@ export function Dashboard({ user, onSignOut }) {
     setFriendModalOpen(true);
   };
 
+  // Handle save user location
+  const handleSaveUserLocation = async (locationData) => {
+    try {
+      const response = await fetch(`${API_URL}/api/user/location`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(locationData),
+      });
+      if (!response.ok) throw new Error("Failed to update location");
+      const updated = await response.json();
+      setUserLocation(updated.city ? updated : null);
+      setUserLocationModalOpen(false);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  // Handle toggle scrubber
+  const handleToggleScrubber = () => {
+    setIsScrubberVisible(prev => !prev);
+  };
+
   // Calculate stats
   const uniqueTimezones = new Set(friends.map((f) => f.timezone_id)).size;
 
@@ -304,10 +352,14 @@ export function Dashboard({ user, onSignOut }) {
           </div>
         )}
 
-        {/* Time Scrubber */}
-        <TimeScrubber
+        {/* Your Time Card */}
+        <YouCard
+          userLocation={userLocation}
           timeOffsetMinutes={timeOffsetMinutes}
-          onOffsetChange={setTimeOffsetMinutes}
+          onTimeOffsetChange={setTimeOffsetMinutes}
+          onEdit={() => setUserLocationModalOpen(true)}
+          onToggleScrubber={handleToggleScrubber}
+          isScrubberVisible={isScrubberVisible}
         />
 
         {/* Friend List */}
@@ -376,6 +428,13 @@ export function Dashboard({ user, onSignOut }) {
         onOpenChange={setDeleteModalOpen}
         friend={deletingFriend}
         onConfirm={handleDeleteFriend}
+      />
+
+      <UserLocationModal
+        open={userLocationModalOpen}
+        onOpenChange={setUserLocationModalOpen}
+        currentLocation={userLocation}
+        onSave={handleSaveUserLocation}
       />
 
       {/* Settings Modal (Mobile) */}
