@@ -237,10 +237,22 @@ export function Dashboard({ user, onSignOut }) {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex items-center gap-3">
           <h1 className="text-lg sm:text-xl font-extrabold gradient-text">
             what's their time
           </h1>
+
+          {/* Stats: Friends + Timezones */}
+          <div className="flex items-center gap-2 sm:gap-3 ml-auto">
+            <div className="flex items-center gap-1.5">
+              <Users className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold text-foreground">{friends.length}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <Globe className="h-4 w-4 text-primary" />
+              <span className="text-sm font-semibold text-foreground">{uniqueTimezones}</span>
+            </div>
+          </div>
 
           {/* Desktop: Full user info + sign out */}
           <div className="hidden sm:flex items-center gap-4">
@@ -285,40 +297,6 @@ export function Dashboard({ user, onSignOut }) {
       </nav>
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Summary Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div className="flex gap-4">
-            <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-border">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <Users className="h-4 w-4 text-primary-foreground" />
-              </div>
-              <span className="font-bold text-lg text-foreground">
-                {friends.length}
-              </span>
-              <span className="text-muted-foreground font-medium">Friends</span>
-            </div>
-            <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-sm border border-border">
-              <div className="w-8 h-8 bg-secondary rounded-full flex items-center justify-center">
-                <Globe className="h-4 w-4 text-secondary-foreground" />
-              </div>
-              <span className="font-bold text-lg text-foreground">
-                {uniqueTimezones}
-              </span>
-              <span className="text-muted-foreground font-medium">
-                Timezones
-              </span>
-            </div>
-          </div>
-          {/* Desktop only: Add Friend button */}
-          <Button
-            onClick={handleAdd}
-            className="hidden sm:flex gap-2 bg-primary hover:bg-primary/90 shadow-lg font-semibold"
-          >
-            <Plus className="h-4 w-4" />
-            Add Friend
-          </Button>
-        </div>
-
         {/* Error display */}
         {error && (
           <div className="mb-4 p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive font-medium">
@@ -376,10 +354,10 @@ export function Dashboard({ user, onSignOut }) {
         )}
       </main>
 
-      {/* Mobile FAB (Floating Action Button) */}
+      {/* FAB (Floating Action Button) */}
       <button
         onClick={handleAdd}
-        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 active:scale-95"
+        className="fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 active:scale-95"
         aria-label="Add Friend"
       >
         <Plus className="h-6 w-6" />
