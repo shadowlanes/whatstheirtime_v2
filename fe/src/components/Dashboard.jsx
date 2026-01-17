@@ -14,12 +14,18 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import { Plus, Users, Globe } from "lucide-react";
+import { Plus, Users, Globe, Settings, LogOut } from "lucide-react";
 import { FriendCard } from "./FriendCard";
 import { FriendModal } from "./FriendModal";
 import { DeleteConfirmModal } from "./DeleteConfirmModal";
 import { TimeScrubber } from "./TimeScrubber";
 import { refreshWeatherForCity } from "@/utils/weatherUtils";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
@@ -33,6 +39,7 @@ export function Dashboard({ user, onSignOut }) {
   const [editingFriend, setEditingFriend] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [deletingFriend, setDeletingFriend] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   // Ticker state for updating times
   const [, setTick] = useState(0);
@@ -230,11 +237,13 @@ export function Dashboard({ user, onSignOut }) {
     <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="border-b border-border bg-card/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-extrabold gradient-text">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4 flex justify-between items-center">
+          <h1 className="text-lg sm:text-xl font-extrabold gradient-text">
             what's their time
           </h1>
-          <div className="flex items-center gap-4">
+
+          {/* Desktop: Full user info + sign out */}
+          <div className="hidden sm:flex items-center gap-4">
             <div className="flex items-center gap-2">
               {user.image && (
                 <img
@@ -254,6 +263,24 @@ export function Dashboard({ user, onSignOut }) {
               Sign Out
             </button>
           </div>
+
+          {/* Mobile: Avatar + Settings icon */}
+          <button
+            onClick={() => setSettingsOpen(true)}
+            className="sm:hidden flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            {user.image ? (
+              <img
+                src={user.image}
+                alt={user.name}
+                className="w-8 h-8 rounded-full ring-2 ring-primary/20"
+              />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                <Settings className="h-5 w-5 text-primary" />
+              </div>
+            )}
+          </button>
         </div>
       </nav>
 
@@ -282,9 +309,10 @@ export function Dashboard({ user, onSignOut }) {
               </span>
             </div>
           </div>
+          {/* Desktop only: Add Friend button */}
           <Button
             onClick={handleAdd}
-            className="gap-2 bg-primary hover:bg-primary/90 shadow-lg font-semibold"
+            className="hidden sm:flex gap-2 bg-primary hover:bg-primary/90 shadow-lg font-semibold"
           >
             <Plus className="h-4 w-4" />
             Add Friend
@@ -348,6 +376,15 @@ export function Dashboard({ user, onSignOut }) {
         )}
       </main>
 
+      {/* Mobile FAB (Floating Action Button) */}
+      <button
+        onClick={handleAdd}
+        className="sm:hidden fixed bottom-6 right-6 w-14 h-14 bg-primary hover:bg-primary/90 text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center z-40 active:scale-95"
+        aria-label="Add Friend"
+      >
+        <Plus className="h-6 w-6" />
+      </button>
+
       {/* Modals */}
       <FriendModal
         open={friendModalOpen}
@@ -362,6 +399,44 @@ export function Dashboard({ user, onSignOut }) {
         friend={deletingFriend}
         onConfirm={handleDeleteFriend}
       />
+
+      {/* Settings Modal (Mobile) */}
+      <Dialog open={settingsOpen} onOpenChange={setSettingsOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Account</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
+              {user.image && (
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-12 h-12 rounded-full ring-2 ring-primary/20"
+                />
+              )}
+              <div className="flex-1">
+                <p className="text-sm text-muted-foreground">Signed in as</p>
+                <p className="font-semibold text-foreground">{user.name}</p>
+                {user.email && (
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                )}
+              </div>
+            </div>
+            <Button
+              onClick={() => {
+                setSettingsOpen(false);
+                onSignOut();
+              }}
+              variant="outline"
+              className="w-full gap-2"
+            >
+              <LogOut className="h-4 w-4" />
+              Log Out
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

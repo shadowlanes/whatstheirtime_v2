@@ -31,8 +31,22 @@ export function TimeScrubber({ timeOffsetMinutes, onOffsetChange }) {
   };
 
   return (
-    <div className="bg-card/80 backdrop-blur-sm rounded-2xl shadow-sm border border-border p-6 mb-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-card/80 backdrop-blur-sm rounded-2xl shadow-sm border border-border p-4 sm:p-6 mb-6">
+      {/* Mobile: Compact header with time and date on same line */}
+      <div className="sm:hidden flex items-center justify-between mb-3">
+        <div>
+          <p className="text-xs font-medium text-muted-foreground">Your Time</p>
+          <p className="text-xl font-bold gradient-text">
+            {offsetTime.toFormat('h:mm a')}
+          </p>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {offsetTime.toFormat('EEE, MMM d')}
+        </p>
+      </div>
+
+      {/* Desktop: Original centered layout */}
+      <div className="hidden sm:flex items-center justify-between mb-4">
         <div className="flex-1 text-center">
           <p className="text-sm font-medium text-muted-foreground mb-1">Your Time</p>
           <p className="text-2xl font-bold gradient-text">
@@ -44,8 +58,8 @@ export function TimeScrubber({ timeOffsetMinutes, onOffsetChange }) {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 sm:gap-4">
-        <span className="text-xs font-medium text-muted-foreground w-10 sm:w-12 text-center">
+      <div className="flex items-center gap-2 sm:gap-4">
+        <span className="text-xs font-medium text-muted-foreground w-8 sm:w-12 text-center">
           -12h
         </span>
 
@@ -59,12 +73,12 @@ export function TimeScrubber({ timeOffsetMinutes, onOffsetChange }) {
             onChange={handleSliderChange}
             aria-label="Time offset in hours"
             aria-valuetext={formatTimeOffset(timeOffsetMinutes)}
-            className="w-full h-2 bg-muted rounded-lg appearance-none cursor-pointer slider-thumb"
+            className="w-full h-3 sm:h-2 bg-muted rounded-lg appearance-none cursor-pointer slider-thumb touch-action-none"
           />
-          <div className="absolute top-0 left-1/2 w-px h-2 bg-primary -translate-x-1/2" />
+          <div className="absolute top-0 left-1/2 w-px h-3 sm:h-2 bg-primary -translate-x-1/2 pointer-events-none" />
         </div>
 
-        <span className="text-xs font-medium text-muted-foreground w-10 sm:w-12 text-center">
+        <span className="text-xs font-medium text-muted-foreground w-8 sm:w-12 text-center">
           +12h
         </span>
       </div>
