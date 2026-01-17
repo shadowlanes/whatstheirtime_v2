@@ -1,7 +1,7 @@
-import path from "path"
-import react from "@vitejs/plugin-react"
-import { defineConfig } from "vite"
-import { VitePWA } from "vite-plugin-pwa"
+import path from "path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import { VitePWA } from "vite-plugin-pwa";
 
 export default defineConfig({
   server: {
@@ -15,8 +15,9 @@ export default defineConfig({
       includeAssets: ["icons/*.png", "icons/*.svg"],
       manifest: {
         name: "what's their time",
-        short_name: "Their Time",
-        description: "Track friends across timezones with real-time weather and air quality",
+        short_name: "what's their time",
+        description:
+          "Track friends across timezones with real-time weather and air quality",
         theme_color: "#6366f1",
         background_color: "#ffffff",
         display: "standalone",
@@ -27,20 +28,20 @@ export default defineConfig({
             src: "/icons/icon-192x192.png",
             sizes: "192x192",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any maskable",
           },
           {
             src: "/icons/icon-512x512.png",
             sizes: "512x512",
             type: "image/png",
-            purpose: "any maskable"
+            purpose: "any maskable",
           },
           {
             src: "/icons/icon-384x384.png",
             sizes: "384x384",
-            type: "image/png"
-          }
-        ]
+            type: "image/png",
+          },
+        ],
       },
       workbox: {
         globPatterns: ["**/*.{js,css,html,ico,png,svg,woff,woff2}"],
@@ -82,4 +83,4 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-})
+});

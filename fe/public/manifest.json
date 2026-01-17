@@ -1,6 +1,6 @@
 {
   "name": "what's their time",
-  "short_name": "Their Time",
+  "short_name": "what's their time",
   "description": "Track friends across timezones with real-time weather and air quality",
   "start_url": "/",
   "display": "standalone",
