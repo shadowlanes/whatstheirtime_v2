@@ -1,10 +1,4 @@
-import cities from "@/data/cities.json";
-
-// Build a map of city names to coordinates from the cities data
-const CITY_COORDINATES = cities.reduce((map, city) => {
-  map[city.name] = [city.latitude, city.longitude];
-  return map;
-}, {});
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
 
 // Map weather codes to descriptions
 // Based on WMO Weather interpretation codes
@@ -92,10 +86,10 @@ function getAirQualityInfo(usAqi) {
   };
 }
 
-// Check if cached weather is still valid (not older than 6 hours)
+// Check if cached weather is still valid (not older than 60 minutes)
 function isCacheValid(timestamp) {
-  const SIX_HOURS = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
-  return Date.now() - timestamp < SIX_HOURS;
+  const SIXTY_MINUTES = 60 * 60 * 1000; // 60 minutes in milliseconds
+  return Date.now() - timestamp < SIXTY_MINUTES;
 }
 
 // Get weather from localStorage or fetch from API
@@ -110,59 +104,36 @@ export async function getWeatherForCity(city) {
     }
   }
 
-  // Cache is missing or stale, fetch from API
-  return fetchWeatherFromAPI(city);
+  // Cache is missing or stale, fetch from backend
+  return fetchWeatherFromBackend(city);
 }
 
-// Fetch weather and air quality from Open-Meteo API
-async function fetchWeatherFromAPI(city) {
+// Fetch weather from backend API
+async function fetchWeatherFromBackend(city) {
   try {
-    const coords = CITY_COORDINATES[city];
-    if (!coords) {
-      console.warn(`Coordinates not found for city: ${city}`);
-      return null;
+    const response = await fetch(`${API_URL}/api/weather/${encodeURIComponent(city)}`);
+
+    if (!response.ok) {
+      throw new Error(`Backend API error: ${response.statusText}`);
     }
 
-    const [latitude, longitude] = coords;
+    const weatherData = await response.json();
 
-    // Fetch both weather and air quality in parallel
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=celsius&timezone=auto`;
-    const airQualityUrl = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${latitude}&longitude=${longitude}&current=european_aqi,us_aqi,pm10,pm2_5`;
-
-    const [weatherResponse, airQualityResponse] = await Promise.all([
-      fetch(weatherUrl),
-      fetch(airQualityUrl),
-    ]);
-
-    if (!weatherResponse.ok) {
-      throw new Error(`Weather API error: ${weatherResponse.statusText}`);
-    }
-
-    const weatherData = await weatherResponse.json();
-    const current = weatherData.current;
-
-    let airQualityData = null;
-    if (airQualityResponse.ok) {
-      const aqData = await airQualityResponse.json();
-      const aqCurrent = aqData.current;
-      const aqInfo = getAirQualityInfo(aqCurrent.us_aqi);
-
-      airQualityData = {
-        aqi: aqCurrent.us_aqi,
-        pm10: aqCurrent.pm10,
-        pm25: aqCurrent.pm2_5,
-        ...aqInfo,
-      };
-    }
-
+    // Transform backend response to match frontend format
     const combinedData = {
-      temperature: Math.round(current.temperature_2m),
-      weatherCode: current.weather_code,
-      weatherDescription:
-        WEATHER_CODE_DESCRIPTIONS[current.weather_code] || "Unknown",
-      weatherCategory: getWeatherCategory(current.weather_code),
-      airQuality: airQualityData,
-      fetchedAt: new Date().toISOString(),
+      temperature: weatherData.temperature,
+      weatherCode: weatherData.weatherCode,
+      weatherDescription: weatherData.weatherDescription,
+      weatherCategory: weatherData.weatherCategory,
+      airQuality: weatherData.aqi ? {
+        aqi: weatherData.aqi,
+        pm10: weatherData.pm10,
+        pm25: weatherData.pm25,
+        category: weatherData.aqiCategory,
+        label: weatherData.aqiLabel,
+        color: weatherData.aqiColor,
+      } : null,
+      fetchedAt: weatherData.fetchedAt,
     };
 
     // Store in localStorage with timestamp

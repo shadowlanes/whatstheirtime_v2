@@ -86,3 +86,19 @@ model Verification {
 
   @@map("verification")
 }
+
+model Weather {
+  id           String   @id @default(uuid())
+  city         String   @unique
+  temperature  Int
+  weatherCode  Int
+  aqi          Int?
+  pm10         Float?
+  pm25         Float?
+  lastUpdated  DateTime @updatedAt
+  createdAt    DateTime @default(now())
+
+  @@index([city])
+  @@index([lastUpdated])
+  @@map("weather")
+}

@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "./lib/auth";
 import { PrismaClient } from "@prisma/client";
+import { getWeatherForCity } from "./lib/weatherService";
+import { initializeCronJobs } from "./lib/cronJobs";
 
 dotenv.config();
 
@@ -216,6 +218,28 @@ app.put("/api/user/location", async (req, res) => {
     res.json(updatedUser);
 });
 
+// GET /api/weather/:city - Get weather for a city (public endpoint)
+app.get("/api/weather/:city", async (req, res) => {
+    const { city } = req.params;
+
+    if (!city) {
+        return res.status(400).json({ error: "City parameter is required" });
+    }
+
+    try {
+        const weatherData = await getWeatherForCity(city);
+
+        if (!weatherData) {
+            return res.status(404).json({ error: "Weather data not found for city" });
+        }
+
+        res.json(weatherData);
+    } catch (error) {
+        console.error(`Error fetching weather for ${city}:`, error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
 // Example protected route
 app.get("/api/protected", async (req, res) => {
     const session = await auth.api.getSession({ headers: req.headers as unknown as Headers });
@@ -224,6 +248,9 @@ app.get("/api/protected", async (req, res) => {
     }
     res.json({ message: "Hello from protected route!", user: session.user });
 });
+
+// Initialize cron jobs
+initializeCronJobs();
 
 app.listen(port, '0.0.0.0', () => {
     console.log(`Server running at http://0.0.0.0:${port}`);

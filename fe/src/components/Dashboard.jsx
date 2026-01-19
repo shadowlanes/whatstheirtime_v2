@@ -118,7 +118,7 @@ export function Dashboard({ user, onSignOut }) {
     return () => clearInterval(interval);
   }, []);
 
-  // Refresh weather for all friends every 6 hours
+  // Refresh weather for all friends every 60 minutes
   useEffect(() => {
     const refreshAllWeather = async () => {
       friends.forEach((friend) => {
@@ -131,9 +131,9 @@ export function Dashboard({ user, onSignOut }) {
     // Refresh immediately on mount
     refreshAllWeather();
 
-    // Set up interval for 6 hours (21,600,000 ms)
-    const SIX_HOURS = 6 * 60 * 60 * 1000;
-    const interval = setInterval(refreshAllWeather, SIX_HOURS);
+    // Set up interval for 60 minutes (3,600,000 ms)
+    const SIXTY_MINUTES = 60 * 60 * 1000;
+    const interval = setInterval(refreshAllWeather, SIXTY_MINUTES);
 
     return () => clearInterval(interval);
   }, [friends]);
