@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@react-native-community/slider": "^5.1.2",
+    "expo-haptics": "^15.0.8"
+  }
+}
