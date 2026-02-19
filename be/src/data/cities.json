@@ -312,6 +312,5 @@
   { "name": "Thimphu", "country_code": "BT", "timezone_id": "Asia/Thimphu", "latitude": 27.5142, "longitude": 89.6386 },
   { "name": "Pyongyang", "country_code": "KP", "timezone_id": "Asia/Pyongyang", "latitude": 39.0176, "longitude": 125.7453 },
   { "name": "Udaipur", "country_code": "IN", "timezone_id": "Asia/Kolkata", "latitude": 24.5854, "longitude": 73.7125 },
-  { "name": "Jaipur", "country_code": "IN", "timezone_id": "Asia/Kolkata", "latitude": 26.9124, "longitude": 75.7873 },
   { "name": "Jodhpur", "country_code": "IN", "timezone_id": "Asia/Kolkata", "latitude": 26.2389, "longitude": 73.0243 }
 ]
